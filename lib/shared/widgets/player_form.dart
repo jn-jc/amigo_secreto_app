@@ -16,7 +16,6 @@ class _PlayerFormState extends State<PlayerForm> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  Gender? selectedGender;
   String name = '';
   int age = 0;
   List<String> gifts = [];
@@ -34,9 +33,7 @@ class _PlayerFormState extends State<PlayerForm> {
     }
 
     
-
-    final newPlayer = Player(name: name, age: age, gender: selectedGender!, gifts: gifts);
-    print('Nuevo jugador: ${newPlayer.name}, Edad: ${newPlayer.age}, Género: ${newPlayer.gender.label}, Regalos: ${newPlayer.gifts.join(', ')}');
+    final newPlayer = Player(name: name, age: age, gifts: gifts);
     playerProvider.addPlayer(newPlayer);
 
     // Aquí puedes agregar la lógica para guardar el jugador
@@ -88,24 +85,6 @@ class _PlayerFormState extends State<PlayerForm> {
                     return null;
                   },
                 ),
-                Row(
-                  children: Gender.values.map((gender) {
-                    return Row(
-                      children: [
-                        Radio<Gender>(
-                          value: gender,
-                          groupValue: selectedGender,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedGender = value;
-                            });
-                          },
-                        ),
-                        Text(gender.label),
-                      ],
-                    );
-                  }).toList(),
-                ),
                 SizedBox(height: 16),
                 CustomTextFormField(
                   label: 'Regalos (Separados por comas y maximo 2 opciones)',
@@ -124,7 +103,7 @@ class _PlayerFormState extends State<PlayerForm> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: 30),
                 ElevatedButton(
                   onPressed: onSubmit,
                   style: ElevatedButton.styleFrom(
@@ -143,6 +122,7 @@ class _PlayerFormState extends State<PlayerForm> {
                     ],
                   ),
                 ),
+                SizedBox(height: 15),
               ],
             ),
           ),
