@@ -1,4 +1,4 @@
-package com.example.amigo_secreto_app
+package com.proyectopoli.amigosecretopoliapp
 
 import io.flutter.embedding.android.FlutterActivity
 
