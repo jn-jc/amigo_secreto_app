@@ -20,9 +20,9 @@ class PlayerContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 0.0),
-      margin: const EdgeInsets.symmetric(vertical: 3.0),
+      margin: const EdgeInsets.only(bottom: 5.0),
       decoration: BoxDecoration(
-        color: Colors.grey.shade300,
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2), // Use the primary color for the container background with a slight opacity
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,29 +34,41 @@ class PlayerContainer extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 8.0),
-                  Text(
-                    playerName,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
-                    ),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.person_outline,
+                        size: 25,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      const SizedBox(width: 8.0),
+                      Text(
+                        '$playerName, $playerAge',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.onPrimaryContainer,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 2.0),
-                  Text(
-                    'Edad: $playerAge',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
-                    ),
-                  ),
-                  const SizedBox(height: 2.0),
-                  Text(
-                    'Regalos: ${playerGifts.join(', ')}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
-                    ),
+                  const SizedBox(height: 10.0),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.card_giftcard_outlined,
+                        size: 25,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      const SizedBox(width: 8.0),
+                      Text(
+                        'Regalos: ${playerGifts.join(', ')}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.onPrimaryContainer,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

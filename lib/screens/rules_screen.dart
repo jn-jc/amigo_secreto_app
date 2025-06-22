@@ -12,6 +12,7 @@ class RulesScreen extends StatelessWidget {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -24,7 +25,7 @@ class RulesScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             const Text(
-              '1. Deben ser como minimo 6 participantes (3 parejas en adelante).',
+              '1. Deben ser como minimo 4 participantes (2 parejas en adelante).',
               style: TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 10),

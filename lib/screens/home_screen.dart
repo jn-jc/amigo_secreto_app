@@ -1,5 +1,6 @@
 import 'package:amigo_secreto_app/screens/game_screen.dart';
 import 'package:amigo_secreto_app/screens/rules_screen.dart';
+import 'package:amigo_secreto_app/screens/theme_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +16,18 @@ class HomeScreen extends StatelessWidget {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.palette, color: Colors.white),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ThemeScreen()),
+              );
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -61,9 +74,9 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
-                  CupertinoPageRoute(builder: (context) => const GameScreen()),
+                  MaterialPageRoute(builder: (context) => const GameScreen()),
                 );
               },
               child: const Text('Iniciar Juego'),

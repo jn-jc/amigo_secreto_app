@@ -1,4 +1,7 @@
 import 'package:amigo_secreto_app/providers/player_provider.dart';
+import 'package:amigo_secreto_app/screens/home_screen.dart';
+import 'package:amigo_secreto_app/screens/rules_screen.dart';
+import 'package:amigo_secreto_app/shared/widgets/pairs_button.dart';
 import 'package:amigo_secreto_app/shared/widgets/player_container.dart';
 import 'package:amigo_secreto_app/shared/widgets/player_form.dart';
 import 'package:flutter/material.dart';
@@ -18,9 +21,21 @@ class GameScreen extends StatelessWidget {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.info_outline, color: Colors.white),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const RulesScreen()),
+              );
+            },
+          ),
+        ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(2.0),
+        padding: const EdgeInsets.all(0.0),
         child: Column(
           children: [
             const SizedBox(height: 20),
@@ -28,49 +43,85 @@ class GameScreen extends StatelessWidget {
               'Jugadores',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 5),
+            const Text(
+              'Minimo 4 jugadores para crear parejas',
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+            const SizedBox(height: 10),
             Expanded(
               child: playersProvider.players.isNotEmpty
-                  ? ListView.builder(
-                      itemCount: playersProvider.players.length,
-                      itemBuilder: (context, index) {
-                        final player = playersProvider.players[index];
-                        return PlayerContainer(
-                          playerName: player.name,
-                          playerAge: player.age,
-                          playerGifts: player.gifts,
-                          onDelete: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: const Text('Eliminar Jugador'),
-                                  content: const Text(
-                                    '¿Estás seguro de que quieres eliminar este jugador?',
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () => Navigator.of(context).pop(),
-                                      child: const Text('Cancelar'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        playersProvider.removePlayer(player);
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: const Text(
-                                        'Eliminar',
-                                        style: TextStyle(color: Colors.red),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          },
-                        );
-                      },
-                    )
+                  ? Scrollbar(
+                    thumbVisibility: true,
+                    thickness: 5,
+                    radius: const Radius.circular(10),
+                    trackVisibility: false,
+                    child: ListView.builder(
+                        itemCount: playersProvider.players.length,
+                        itemBuilder: (context, index) {
+                          final player = playersProvider.players[index];
+                          final isLast = index == playersProvider.players.length - 1;
+                          return Column(
+                            children: [
+                              PlayerContainer(
+                                playerName: player.name.split(' ').first,
+                                playerAge: player.age,
+                                playerGifts: player.gifts,
+                                onEdit: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    builder: (context) {
+                                      return SingleChildScrollView(
+                                        padding: EdgeInsets.only(
+                                          bottom: MediaQuery.of(context).viewInsets.bottom,
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(bottom: 3.0),
+                                          child: PlayerForm(player: player),
+                                        ),
+                                      );
+                                    },
+                                    isScrollControlled: true,
+                                    useSafeArea: true,
+                                  );
+                                },
+                                onDelete: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: const Text('Eliminar Jugador'),
+                                        content: const Text(
+                                          '¿Estás seguro de que quieres eliminar este jugador?',
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () => Navigator.of(context).pop(),
+                                            child: const Text('Cancelar'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              playersProvider.removePlayer(player);
+                                              playersProvider.clearPairs();
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: const Text(
+                                              'Eliminar',
+                                              style: TextStyle(color: Colors.red),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                              if (isLast && playersProvider.pairs.isEmpty) const SizedBox(height: 90),
+                            ],
+                          );
+                        },
+                      ),
+                  )
                   : const Center(
                       child: Text(
                         'No hay jugadores agregados',
@@ -81,7 +132,7 @@ class GameScreen extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: playersProvider.pairs.isEmpty ? FloatingActionButton(
         onPressed: () {
           showModalBottomSheet(
             context: context,
@@ -101,7 +152,7 @@ class GameScreen extends StatelessWidget {
           );
         }, // Add your action here
         child: Icon(Icons.add),
-      ),
+      ) : Container(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       bottomNavigationBar: BottomAppBar(
         child: Row(
@@ -111,9 +162,13 @@ class GameScreen extends StatelessWidget {
               icon: const Icon(Icons.home),
               onPressed: () {
                 // Navigate to home screen
-                Navigator.pop(context);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                );
               },
             ),
+            const PairsButton(),
             IconButton(
               icon: const Icon(Icons.replay),
               onPressed: () => showDialog(
